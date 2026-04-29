@@ -91,6 +91,13 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  30%  { transform: translateX(-100%); }
+  70%  { transform: translateX(400%); }
+  100% { transform: translateX(400%); }
+}
+
 * {
   border-color: hsl(var(--border));
 }

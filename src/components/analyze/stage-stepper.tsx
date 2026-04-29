@@ -23,8 +23,16 @@ export function StageStepper({ stage }: Props) {
   const current = STAGE_ORDER.indexOf(stage)
   const isDone = stage === "done"
 
+  const isActive = stage !== "idle" && stage !== "done" && stage !== "error"
+
   return (
-    <div className="flex items-center rounded-xl border bg-card px-4 py-3">
+    <div className="relative flex items-center overflow-hidden rounded-xl border bg-card px-4 py-3">
+      {isActive && (
+        <div
+          className="pointer-events-none absolute inset-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/10 to-transparent dark:via-white/5"
+          style={{ animation: "shimmer 2.2s ease-in-out infinite" }}
+        />
+      )}
       {STAGES.map((s, i) => {
         const stepNum = i + 1
         const done = isDone || current > stepNum
