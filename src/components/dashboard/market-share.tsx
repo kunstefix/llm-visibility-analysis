@@ -52,8 +52,9 @@ function SinglePie({
   }
 
   return (
-    <div className="flex min-w-0 flex-col gap-3">
+    <div className="flex w-full min-w-0 flex-col gap-3">
       <h3 className="text-sm font-semibold">{label}</h3>
+      <div style={{ width: "100%" }}>
       <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
@@ -99,6 +100,7 @@ function SinglePie({
           />
         </PieChart>
       </ResponsiveContainer>
+      </div>
 
       <button
         className="w-fit cursor-pointer text-left text-xs text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
@@ -155,7 +157,7 @@ function SinglePie({
 
 export function MarketShare({ openAiShares, geminiShares, targetBrand }: Props) {
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">Market Share</CardTitle>
       </CardHeader>

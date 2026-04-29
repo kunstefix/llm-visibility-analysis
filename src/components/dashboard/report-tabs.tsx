@@ -39,10 +39,10 @@ export function ReportTabs({
   }
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto w-full max-w-5xl flex-col gap-6 px-4 py-8">
       {header}
 
-      <div className="flex gap-1 rounded-xl border bg-muted/40 p-1">
+      <div className="mt-6 flex gap-1 rounded-xl border bg-muted/40 p-1">
         {TABS.map((tab) => (
           <button
             key={tab.key}
@@ -59,9 +59,9 @@ export function ReportTabs({
         ))}
       </div>
 
-      <div className="flex flex-col gap-6">{panels[active]}</div>
+      <div className="mt-6 flex w-full flex-col gap-6">{panels[active]}</div>
 
-      {footer}
+      {footer && <div className="mt-6">{footer}</div>}
     </div>
   )
 }

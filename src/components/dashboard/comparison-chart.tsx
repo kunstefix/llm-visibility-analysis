@@ -77,11 +77,12 @@ export function ComparisonChart({
   }
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader className="pb-2">
         <CardTitle className="text-base">ChatGPT vs Gemini</CardTitle>
       </CardHeader>
       <CardContent>
+        <div style={{ width: "100%" }}>
         <ResponsiveContainer width="100%" height={240}>
           <BarChart
             data={data}
@@ -117,6 +118,7 @@ export function ComparisonChart({
             <Bar dataKey="Gemini" fill={GEMINI_COLOR} radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   )
