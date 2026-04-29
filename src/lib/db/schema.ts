@@ -7,6 +7,7 @@ import {
   jsonb,
   integer,
 } from "drizzle-orm/pg-core"
+import { relations } from "drizzle-orm"
 
 export const reportStatusEnum = pgEnum("report_status", [
   "completed",
@@ -57,3 +58,19 @@ export const promptResults = pgTable("prompt_results", {
   durationMs: integer("duration_ms"),
   errorMessage: text("error_message"),
 })
+
+export const reportsRelations = relations(reports, ({ many }) => ({
+  prompts: many(prompts),
+}))
+
+export const promptsRelations = relations(prompts, ({ one, many }) => ({
+  report: one(reports, { fields: [prompts.reportId], references: [reports.id] }),
+  results: many(promptResults),
+}))
+
+export const promptResultsRelations = relations(promptResults, ({ one }) => ({
+  prompt: one(prompts, {
+    fields: [promptResults.promptId],
+    references: [prompts.id],
+  }),
+}))
