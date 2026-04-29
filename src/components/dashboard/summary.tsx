@@ -1,3 +1,5 @@
+"use client"
+
 import { cn } from "@/lib/utils"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -149,7 +151,18 @@ export function Summary({
         {neverMentioned && (
           <div className="mt-6 rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
             <strong>{brandName}</strong> was not mentioned in any LLM response.
-            See the Recommendations section for next steps.
+            See the{" "}
+            <button
+              className="cursor-pointer underline hover:text-primary"
+              onClick={() => {
+                window.history.pushState(null, "", "?tab=insights")
+                window.dispatchEvent(new PopStateEvent("popstate"))
+              }}
+            >
+              Recommendations
+            </button>{" "}
+            section under the Insights tab for next steps.
+       
           </div>
         )}
       </CardContent>
