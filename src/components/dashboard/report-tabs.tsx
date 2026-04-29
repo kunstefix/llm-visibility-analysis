@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 
 const TABS = [
@@ -11,6 +11,10 @@ const TABS = [
 ] as const
 
 type TabKey = (typeof TABS)[number]["key"]
+
+function isValidTab(value: string | null): value is TabKey {
+  return TABS.some((t) => t.key === value)
+}
 
 type Props = {
   header: React.ReactNode
@@ -31,6 +35,33 @@ export function ReportTabs({
 }: Props) {
   const [active, setActive] = useState<TabKey>("overview")
 
+  // Read initial tab from URL on mount
+  useEffect(() => {
+    const tab = new URLSearchParams(window.location.search).get("tab")
+    if (isValidTab(tab)) setActive(tab)
+  }, [])
+
+  // Sync back/forward browser navigation
+  useEffect(() => {
+    function onPopState() {
+      const tab = new URLSearchParams(window.location.search).get("tab")
+      setActive(isValidTab(tab) ? tab : "overview")
+    }
+    window.addEventListener("popstate", onPopState)
+    return () => window.removeEventListener("popstate", onPopState)
+  }, [])
+
+  function handleTabChange(tab: TabKey) {
+    setActive(tab)
+    const url = new URL(window.location.href)
+    if (tab === "overview") {
+      url.searchParams.delete("tab")
+    } else {
+      url.searchParams.set("tab", tab)
+    }
+    window.history.pushState(null, "", url.toString())
+  }
+
   const panels: Record<TabKey, React.ReactNode> = {
     overview,
     "market-share": marketShare,
@@ -39,14 +70,14 @@ export function ReportTabs({
   }
 
   return (
-    <div className="mx-auto w-full max-w-5xl flex-col gap-6 px-4 py-8">
+    <div className="mx-auto w-full max-w-5xl px-4 py-8">
       {header}
 
       <div className="mt-6 flex gap-1 rounded-xl border bg-muted/40 p-1">
         {TABS.map((tab) => (
           <button
             key={tab.key}
-            onClick={() => setActive(tab.key)}
+            onClick={() => handleTabChange(tab.key)}
             className={cn(
               "flex-1 cursor-pointer rounded-lg px-3 py-2 text-sm font-medium transition-all",
               active === tab.key
