@@ -305,7 +305,7 @@ export default async function ReportPage({
           <Recommendations key="recommendations" recommendations={recommendations} />
         </>
       }
-      footer={<ReportFooter />}
+      footer={<ReportFooter key="footer" />}
     />
   )
 }
