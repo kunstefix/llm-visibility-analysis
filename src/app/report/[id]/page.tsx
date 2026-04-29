@@ -260,6 +260,7 @@ export default async function ReportPage({
       overview={
         <>
           <Summary
+            key="summary"
             overallScore={overall}
             openAiScore={openAiScore}
             geminiScore={geminiScore}
@@ -269,6 +270,7 @@ export default async function ReportPage({
             geminiFailed={geminiFailed}
           />
           <ComparisonChart
+            key="chart"
             openAiScore={openAiScore}
             geminiScore={geminiScore}
             openAiMentions={openAiMentionsTotal}
@@ -296,10 +298,11 @@ export default async function ReportPage({
       insights={
         <>
           <Citations
+            key="citations"
             openAiCitations={openAiCitationDomains}
             geminiCitations={geminiCitationDomains}
           />
-          <Recommendations recommendations={recommendations} />
+          <Recommendations key="recommendations" recommendations={recommendations} />
         </>
       }
       footer={<ReportFooter />}
