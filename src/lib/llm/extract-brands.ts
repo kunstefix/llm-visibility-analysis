@@ -5,7 +5,11 @@ import { logger } from "@/lib/logger"
 import { normalizeBrand } from "@/lib/normalize"
 import type { BrandMention } from "./types"
 
-const client = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+let _client: OpenAI | undefined
+function getClient() {
+  if (!_client) _client = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+  return _client
+}
 
 const BrandsOutputSchema = z.object({
   brands: z.array(
@@ -20,7 +24,7 @@ async function callExtract(
   answerText: string,
   signal: AbortSignal
 ): Promise<{ name: string; mentions: number }[]> {
-  const res = await client.responses.create(
+  const res = await getClient().responses.create(
     {
       model: "gpt-4o-mini",
       instructions: `Extract all brand and company names mentioned in the following text.

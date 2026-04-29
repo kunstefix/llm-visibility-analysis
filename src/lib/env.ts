@@ -10,4 +10,22 @@ const envSchema = z.object({
     .default("development"),
 })
 
-export const env = envSchema.parse(process.env)
+type Env = z.infer<typeof envSchema>
+
+// Lazy validation: throws on first access at runtime, not at module import time.
+// This keeps the fail-fast guarantee while allowing Next.js to import the module
+// during build without requiring env vars in CI.
+let _parsed: Env | undefined
+
+function getEnv(): Env {
+  if (!_parsed) {
+    _parsed = envSchema.parse(process.env)
+  }
+  return _parsed
+}
+
+export const env: Env = new Proxy({} as Env, {
+  get(_, key: string) {
+    return getEnv()[key as keyof Env]
+  },
+})

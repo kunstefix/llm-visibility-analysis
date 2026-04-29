@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { Suspense, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { StageStepper } from "@/components/analyze/stage-stepper"
@@ -16,7 +16,7 @@ function formatElapsed(ms: number): string {
   return `${s}s`
 }
 
-export default function AnalyzePage() {
+function AnalyzeContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const url = searchParams.get("url") ?? ""
@@ -145,5 +145,19 @@ export default function AnalyzePage() {
         </section>
       )}
     </div>
+  )
+}
+
+export default function AnalyzePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex min-h-screen items-center justify-center text-muted-foreground text-sm">
+          Loading…
+        </div>
+      }
+    >
+      <AnalyzeContent />
+    </Suspense>
   )
 }

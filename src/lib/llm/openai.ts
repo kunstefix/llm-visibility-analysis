@@ -4,7 +4,16 @@ import { logger } from "@/lib/logger"
 import type { Citation, LLMResult } from "./types"
 import { extractBrands } from "./extract-brands"
 
-const client = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+let _client: OpenAI | undefined
+function getClient() {
+  if (!_client) _client = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+  return _client
+}
+const client = new Proxy({} as OpenAI, {
+  get(_, key: string | symbol) {
+    return getClient()[key as keyof OpenAI]
+  },
+})
 
 const LLM_TIMEOUT_MS = 30_000
 

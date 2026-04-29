@@ -4,7 +4,11 @@ import { logger } from "@/lib/logger"
 import type { Citation, LLMResult } from "./types"
 import { extractBrands } from "./extract-brands"
 
-const genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY)
+let _genAI: GoogleGenerativeAI | undefined
+function getGenAI() {
+  if (!_genAI) _genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY)
+  return _genAI
+}
 
 const LLM_TIMEOUT_MS = 30_000
 
@@ -26,7 +30,7 @@ export async function queryGemini(
   const combined = AbortSignal.any([signal, timeout])
 
   try {
-    const model = genAI.getGenerativeModel({
+    const model = getGenAI().getGenerativeModel({
       model: "gemini-2.0-flash",
       tools: [{ googleSearchRetrieval: {} }],
     })

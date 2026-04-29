@@ -5,7 +5,11 @@ import { logger } from "@/lib/logger"
 import { templates, type PromptStage } from "./templates"
 import type { ScrapedContext } from "@/lib/scrape"
 
-const client = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+let _client: OpenAI | undefined
+function getClient() {
+  if (!_client) _client = new OpenAI({ apiKey: env.OPENAI_API_KEY })
+  return _client
+}
 
 const CategorySchema = z.object({
   brandCategory: z.string(),
@@ -35,7 +39,7 @@ async function inferCategory(
     .filter(Boolean)
     .join("\n")
 
-  const res = await client.responses.create(
+  const res = await getClient().responses.create(
     {
       model: "gpt-4o-mini",
       instructions: systemPrompt,
