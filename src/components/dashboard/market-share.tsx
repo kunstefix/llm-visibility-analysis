@@ -54,16 +54,16 @@ function SinglePie({
   return (
     <div className="flex min-w-0 flex-col gap-3">
       <h3 className="text-sm font-semibold">{label}</h3>
-      <ResponsiveContainer width="100%" height={260}>
+      <ResponsiveContainer width="100%" height={300}>
         <PieChart>
           <Pie
             data={shares}
             dataKey="share"
             nameKey="name"
             cx="50%"
-            cy="46%"
-            outerRadius={80}
-            innerRadius={40}
+            cy="44%"
+            outerRadius={100}
+            innerRadius={50}
           >
             {shares.map((entry, i) => (
               <Cell
@@ -160,7 +160,7 @@ export function MarketShare({ openAiShares, geminiShares, targetBrand }: Props) 
         <CardTitle className="text-base">Market Share</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid gap-8 sm:grid-cols-2">
+        <div className="grid gap-10 lg:grid-cols-2">
           <SinglePie
             shares={openAiShares}
             targetBrand={targetBrand}
