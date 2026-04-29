@@ -12,6 +12,7 @@
     "db:generate": "drizzle-kit generate"
   },
   "dependencies": {
+    "@google/genai": "^1.50.1",
     "@google/generative-ai": "^0.24.1",
     "@neondatabase/serverless": "^1.1.0",
     "cheerio": "^1.2.0",

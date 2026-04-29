@@ -1,5 +1,4 @@
 import { notFound } from "next/navigation"
-import Link from "next/link"
 import { getReport } from "@/lib/db/queries"
 import { ReportIdSchema } from "@/lib/validation"
 import {
@@ -18,6 +17,7 @@ import { MarketShare } from "@/components/dashboard/market-share"
 import { Citations } from "@/components/dashboard/citations"
 import { PromptAccordion } from "@/components/dashboard/prompt-accordion"
 import { Recommendations } from "@/components/dashboard/recommendations"
+import { ReportFooter } from "@/components/dashboard/report-footer"
 import OpenAI from "openai"
 import { env } from "@/lib/env"
 
@@ -238,11 +238,6 @@ export default async function ReportPage({
     }
   })
 
-  const reportUrl =
-    typeof window === "undefined"
-      ? `/report/${id}`
-      : `${window.location.origin}/report/${id}`
-
   return (
     <div className="mx-auto flex max-w-5xl flex-col gap-12 px-4 py-12">
       {/* Page header */}
@@ -306,21 +301,7 @@ export default async function ReportPage({
       <Recommendations recommendations={recommendations} />
 
       {/* 7. Share / re-run footer */}
-      <footer className="flex items-center justify-between gap-4 border-t pt-6 text-sm">
-        <button
-          onClick={() => {
-            if (typeof window !== "undefined") {
-              navigator.clipboard.writeText(window.location.href).catch(() => {})
-            }
-          }}
-          className="text-muted-foreground underline"
-        >
-          Copy link
-        </button>
-        <Link href="/" className="underline">
-          Run again
-        </Link>
-      </footer>
+      <ReportFooter />
     </div>
   )
 }

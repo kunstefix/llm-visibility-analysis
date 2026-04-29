@@ -4,7 +4,7 @@ import { scrapeUrl } from "@/lib/scrape"
 import { generatePrompts } from "@/lib/prompts/generate"
 import { queryOpenAI } from "@/lib/llm/openai"
 import { queryGemini } from "@/lib/llm/gemini"
-import { isRateLimited, hashIp } from "@/lib/rate-limit"
+import { hashIp } from "@/lib/rate-limit"
 import {
   insertReport,
   insertPrompts,
@@ -52,13 +52,14 @@ export async function POST(req: NextRequest) {
   const ip = getIp(req)
   const ipHash = hashIp(ip)
 
-  const rateLimited = await isRateLimited(ip).catch(() => false)
-  if (rateLimited) {
-    return Response.json(
-      { error: "Rate limit exceeded. You can run 3 analyses per day." },
-      { status: 429 }
-    )
-  }
+  // Rate limiting disabled
+  // const rateLimited = await isRateLimited(ip).catch(() => false)
+  // if (rateLimited) {
+  //   return Response.json(
+  //     { error: "Rate limit exceeded. You can run 3 analyses per day." },
+  //     { status: 429 }
+  //   )
+  // }
 
   const stream = new ReadableStream({
     async start(controller) {

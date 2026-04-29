@@ -1,12 +1,12 @@
-import { GoogleGenerativeAI } from "@google/generative-ai"
+import { GoogleGenAI } from "@google/genai"
 import { env } from "@/lib/env"
 import { logger } from "@/lib/logger"
 import type { Citation, LLMResult } from "./types"
 import { extractBrands } from "./extract-brands"
 
-let _genAI: GoogleGenerativeAI | undefined
+let _genAI: GoogleGenAI | undefined
 function getGenAI() {
-  if (!_genAI) _genAI = new GoogleGenerativeAI(env.GOOGLE_GENERATIVE_AI_API_KEY)
+  if (!_genAI) _genAI = new GoogleGenAI({ apiKey: env.GOOGLE_GENERATIVE_AI_API_KEY })
   return _genAI
 }
 
@@ -30,29 +30,21 @@ export async function queryGemini(
   const combined = AbortSignal.any([signal, timeout])
 
   try {
-    const model = getGenAI().getGenerativeModel({
-      model: "gemini-2.0-flash",
-      tools: [{ googleSearchRetrieval: {} }],
+    const response = await getGenAI().models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: promptText,
+      config: {
+        tools: [{ googleSearch: {} }],
+        abortSignal: combined,
+      },
     })
-
-    const controller = new AbortController()
-    const cleanup = () => controller.abort()
-    combined.addEventListener("abort", cleanup, { once: true })
-
-    let result
-    try {
-      result = await model.generateContent(promptText)
-    } finally {
-      combined.removeEventListener("abort", cleanup)
-    }
 
     if (combined.aborted) {
       throw new Error("Request aborted")
     }
 
     const durationMs = Date.now() - start
-    const response = result.response
-    const answerText = response.text()
+    const answerText = response.text ?? ""
 
     const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks ?? []
     const citations: Citation[] = chunks
