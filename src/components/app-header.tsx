@@ -1,4 +1,5 @@
 import Link from "next/link"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function AppHeader() {
   return (
@@ -11,12 +12,15 @@ export function AppHeader() {
           <span className="text-foreground">LLM</span>
           <span className="font-normal text-muted-foreground">Visibility</span>
         </Link>
-        <Link
-          href="/"
-          className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-        >
-          New Analysis
-        </Link>
+        <div className="flex items-center gap-2">
+          <ThemeToggle />
+          <Link
+            href="/"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          >
+            New Analysis
+          </Link>
+        </div>
       </div>
     </header>
   )
