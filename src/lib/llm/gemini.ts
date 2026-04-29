@@ -47,7 +47,7 @@ export async function queryGemini(
     const answerText = response.text ?? ""
 
     const chunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks ?? []
-    const citations: Citation[] = chunks
+    const rawCitations: Citation[] = chunks
       .map((chunk) => {
         const web = chunk.web
         if (!web?.uri) return null
@@ -59,6 +59,7 @@ export async function queryGemini(
       })
       .filter((c): c is Citation => c !== null)
 
+    const citations = await resolveProxyCitations(rawCitations)
     const uniqueCitations = deduplicateCitations(citations)
     const brands = await extractBrands(answerText, signal)
 
@@ -95,6 +96,26 @@ export async function queryGemini(
       errorMessage,
     }
   }
+}
+
+async function resolveProxyCitations(citations: Citation[]): Promise<Citation[]> {
+  return Promise.all(
+    citations.map(async (c) => {
+      if (!c.url.includes("vertexaisearch.cloud.google.com")) return c
+      try {
+        const res = await fetch(c.url, {
+          method: "HEAD",
+          redirect: "manual",
+          signal: AbortSignal.timeout(4_000),
+        })
+        const location = res.headers.get("location")
+        if (!location) return c
+        return { url: location, domain: normalizeDomain(location), title: c.title }
+      } catch {
+        return c
+      }
+    })
+  )
 }
 
 function deduplicateCitations(citations: Citation[]): Citation[] {

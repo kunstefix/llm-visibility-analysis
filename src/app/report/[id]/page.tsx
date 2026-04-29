@@ -7,6 +7,7 @@ import {
   mentionRate,
   marketShare,
   domainCitations,
+  promptVisibility,
   type PromptResultData,
 } from "@/lib/scoring"
 import { normalizeBrand } from "@/lib/normalize"
@@ -16,6 +17,7 @@ import { ComparisonChart } from "@/components/dashboard/comparison-chart"
 import { MarketShare } from "@/components/dashboard/market-share"
 import { Citations } from "@/components/dashboard/citations"
 import { PromptAccordion } from "@/components/dashboard/prompt-accordion"
+import { PromptVisibilityCard } from "@/components/dashboard/prompt-visibility"
 import { Recommendations } from "@/components/dashboard/recommendations"
 import { ReportFooter } from "@/components/dashboard/report-footer"
 import { ReportTabs } from "@/components/dashboard/report-tabs"
@@ -239,6 +241,27 @@ export default async function ReportPage({
     }
   })
 
+  const promptVisibilityRows = prompts.map((prompt, i) => {
+    const openAiResult = prompt.results.find((r) => r.provider === "openai")
+    const geminiResult = prompt.results.find((r) => r.provider === "gemini")
+
+    const openAiPD = openAiResult && !openAiResult.errorMessage
+      ? { provider: "openai" as const, brands: parseBrands(openAiResult.brands), citations: parseCitations(openAiResult.citations) }
+      : null
+    const geminiPD = geminiResult && !geminiResult.errorMessage
+      ? { provider: "gemini" as const, brands: parseBrands(geminiResult.brands), citations: parseCitations(geminiResult.citations) }
+      : null
+
+    return {
+      id: prompt.id,
+      text: prompt.text,
+      stage: prompt.stage,
+      order: i + 1,
+      openAiVisibility: openAiPD ? promptVisibility(openAiPD, brandName) : null,
+      geminiVisibility: geminiPD ? promptVisibility(geminiPD, brandName) : null,
+    }
+  })
+
   return (
     <ReportTabs
       header={
@@ -280,6 +303,7 @@ export default async function ReportPage({
             openAiCitations={openAiCitationsTotal}
             geminiCitations={geminiCitationsTotal}
           />
+          <PromptVisibilityCard key="prompt-visibility" rows={promptVisibilityRows} />
         </>
       }
       marketShare={
