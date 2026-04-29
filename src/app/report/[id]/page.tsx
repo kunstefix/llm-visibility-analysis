@@ -18,6 +18,7 @@ import { Citations } from "@/components/dashboard/citations"
 import { PromptAccordion } from "@/components/dashboard/prompt-accordion"
 import { Recommendations } from "@/components/dashboard/recommendations"
 import { ReportFooter } from "@/components/dashboard/report-footer"
+import { ReportTabs } from "@/components/dashboard/report-tabs"
 import OpenAI from "openai"
 import { env } from "@/lib/env"
 
@@ -239,70 +240,69 @@ export default async function ReportPage({
   })
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8">
-      {/* Page header */}
-      <div className="flex flex-col gap-1">
-        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-          Visibility Report
-        </p>
-        <h1 className="text-2xl font-bold tracking-tight">{brandName}</h1>
-        <p className="text-sm text-muted-foreground">
-          {report.url} ·{" "}
-          {new Date(report.createdAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </p>
-      </div>
-
-      {/* 1. Hero summary */}
-      <Summary
-        overallScore={overall}
-        openAiScore={openAiScore}
-        geminiScore={geminiScore}
-        mentionRateOverall={mentionRateOverall}
-        brandName={brandName}
-        openAiFailed={openAiFailed}
-        geminiFailed={geminiFailed}
-      />
-
-      {/* 2. Comparison chart */}
-      <ComparisonChart
-        openAiScore={openAiScore}
-        geminiScore={geminiScore}
-        openAiMentions={openAiMentionsTotal}
-        geminiMentions={geminiMentionsTotal}
-        openAiUniqueBrands={openAiUniqueBrands}
-        geminiUniqueBrands={geminiUniqueBrands}
-        openAiCitations={openAiCitationsTotal}
-        geminiCitations={geminiCitationsTotal}
-      />
-
-      {/* 3. Market share */}
-      <MarketShare
-        openAiShares={openAiMarket}
-        geminiShares={geminiMarket}
-        targetBrand={normalizeBrand(brandName)}
-      />
-
-      {/* 4. Citation analysis */}
-      <Citations
-        openAiCitations={openAiCitationDomains}
-        geminiCitations={geminiCitationDomains}
-      />
-
-      {/* 5. Per-prompt accordion */}
-      <PromptAccordion
-        prompts={promptAccordionData}
-        targetBrand={brandName}
-      />
-
-      {/* 6. Recommendations */}
-      <Recommendations recommendations={recommendations} />
-
-      {/* 7. Share / re-run footer */}
-      <ReportFooter />
-    </div>
+    <ReportTabs
+      header={
+        <div className="flex flex-col gap-1">
+          <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Visibility Report
+          </p>
+          <h1 className="text-2xl font-bold tracking-tight">{brandName}</h1>
+          <p className="text-sm text-muted-foreground">
+            {report.url} ·{" "}
+            {new Date(report.createdAt).toLocaleDateString("en-US", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </p>
+        </div>
+      }
+      overview={
+        <>
+          <Summary
+            overallScore={overall}
+            openAiScore={openAiScore}
+            geminiScore={geminiScore}
+            mentionRateOverall={mentionRateOverall}
+            brandName={brandName}
+            openAiFailed={openAiFailed}
+            geminiFailed={geminiFailed}
+          />
+          <ComparisonChart
+            openAiScore={openAiScore}
+            geminiScore={geminiScore}
+            openAiMentions={openAiMentionsTotal}
+            geminiMentions={geminiMentionsTotal}
+            openAiUniqueBrands={openAiUniqueBrands}
+            geminiUniqueBrands={geminiUniqueBrands}
+            openAiCitations={openAiCitationsTotal}
+            geminiCitations={geminiCitationsTotal}
+          />
+        </>
+      }
+      marketShare={
+        <MarketShare
+          openAiShares={openAiMarket}
+          geminiShares={geminiMarket}
+          targetBrand={normalizeBrand(brandName)}
+        />
+      }
+      prompts={
+        <PromptAccordion
+          prompts={promptAccordionData}
+          targetBrand={brandName}
+        />
+      }
+      insights={
+        <>
+          <Citations
+            openAiCitations={openAiCitationDomains}
+            geminiCitations={geminiCitationDomains}
+          />
+          <Recommendations recommendations={recommendations} />
+        </>
+      }
+      footer={<ReportFooter />}
+    />
   )
 }
