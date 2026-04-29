@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import {
   PieChart,
   Pie,
@@ -52,18 +52,18 @@ function SinglePie({
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex min-w-0 flex-col gap-3">
       <h3 className="text-sm font-semibold">{label}</h3>
-      <ResponsiveContainer width="100%" height={240}>
+      <ResponsiveContainer width="100%" height={260}>
         <PieChart>
           <Pie
             data={shares}
             dataKey="share"
             nameKey="name"
             cx="50%"
-            cy="50%"
-            outerRadius={88}
-            innerRadius={44}
+            cy="46%"
+            outerRadius={80}
+            innerRadius={40}
           >
             {shares.map((entry, i) => (
               <Cell
@@ -101,7 +101,7 @@ function SinglePie({
       </ResponsiveContainer>
 
       <button
-        className="w-fit cursor-pointer text-left text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground transition-colors"
+        className="w-fit cursor-pointer text-left text-xs text-muted-foreground underline underline-offset-2 transition-colors hover:text-foreground"
         onClick={() => setExpanded((e) => !e)}
       >
         {expanded ? "Hide" : "Show"} full table
@@ -112,9 +112,15 @@ function SinglePie({
           <table className="w-full text-xs">
             <thead>
               <tr className="border-b bg-muted/40">
-                <th className="px-3 py-2 text-left font-medium text-muted-foreground">Brand</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Share</th>
-                <th className="px-3 py-2 text-right font-medium text-muted-foreground">Mentions</th>
+                <th className="px-3 py-2 text-left font-medium text-muted-foreground">
+                  Brand
+                </th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">
+                  Share
+                </th>
+                <th className="px-3 py-2 text-right font-medium text-muted-foreground">
+                  Mentions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -123,18 +129,20 @@ function SinglePie({
                 .map((b) => (
                   <tr
                     key={b.normalizedName}
-                    className={cn(
+                    className={[
                       "border-b last:border-0",
                       b.normalizedName === targetNorm
                         ? "bg-primary/5 font-medium"
-                        : "hover:bg-muted/30"
-                    )}
+                        : "hover:bg-muted/30",
+                    ].join(" ")}
                   >
                     <td className="px-3 py-2">{b.name}</td>
                     <td className="px-3 py-2 text-right tabular-nums">
                       {Math.round(b.share)}%
                     </td>
-                    <td className="px-3 py-2 text-right tabular-nums">{b.mentions}</td>
+                    <td className="px-3 py-2 text-right tabular-nums">
+                      {b.mentions}
+                    </td>
                   </tr>
                 ))}
             </tbody>
@@ -145,30 +153,7 @@ function SinglePie({
   )
 }
 
-function cn(...classes: (string | false | undefined)[]) {
-  return classes.filter(Boolean).join(" ")
-}
-
 export function MarketShare({ openAiShares, geminiShares, targetBrand }: Props) {
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => { setMounted(true) }, [])
-
-  if (!mounted) {
-    return (
-      <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">Market Share</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-8 sm:grid-cols-2">
-            <div className="h-[280px] animate-pulse rounded-md bg-muted/30" />
-            <div className="h-[280px] animate-pulse rounded-md bg-muted/30" />
-          </div>
-        </CardContent>
-      </Card>
-    )
-  }
-
   return (
     <Card>
       <CardHeader className="pb-2">
@@ -176,8 +161,16 @@ export function MarketShare({ openAiShares, geminiShares, targetBrand }: Props) 
       </CardHeader>
       <CardContent>
         <div className="grid gap-8 sm:grid-cols-2">
-          <SinglePie shares={openAiShares} targetBrand={targetBrand} label="ChatGPT" />
-          <SinglePie shares={geminiShares} targetBrand={targetBrand} label="Gemini" />
+          <SinglePie
+            shares={openAiShares}
+            targetBrand={targetBrand}
+            label="ChatGPT"
+          />
+          <SinglePie
+            shares={geminiShares}
+            targetBrand={targetBrand}
+            label="Gemini"
+          />
         </div>
       </CardContent>
     </Card>
