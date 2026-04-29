@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import {
   BarChart,
   Bar,
@@ -36,6 +37,9 @@ export function ComparisonChart({
   openAiCitations,
   geminiCitations,
 }: Props) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
   const data = [
     {
       metric: "Visibility",
@@ -58,6 +62,19 @@ export function ComparisonChart({
       Gemini: geminiCitations,
     },
   ]
+
+  if (!mounted) {
+    return (
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">ChatGPT vs Gemini</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="h-[240px] animate-pulse rounded-md bg-muted/30" />
+        </CardContent>
+      </Card>
+    )
+  }
 
   return (
     <Card>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import {
   PieChart,
   Pie,
@@ -150,6 +150,25 @@ function cn(...classes: (string | false | undefined)[]) {
 }
 
 export function MarketShare({ openAiShares, geminiShares, targetBrand }: Props) {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
+
+  if (!mounted) {
+    return (
+      <Card>
+        <CardHeader className="pb-2">
+          <CardTitle className="text-base">Market Share</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-8 sm:grid-cols-2">
+            <div className="h-[280px] animate-pulse rounded-md bg-muted/30" />
+            <div className="h-[280px] animate-pulse rounded-md bg-muted/30" />
+          </div>
+        </CardContent>
+      </Card>
+    )
+  }
+
   return (
     <Card>
       <CardHeader className="pb-2">
