@@ -239,12 +239,13 @@ export default async function ReportPage({
   })
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col gap-12 px-4 py-12">
+    <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8">
       {/* Page header */}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-2xl font-bold">
-          LLM Visibility Report: {brandName}
-        </h1>
+      <div className="flex flex-col gap-1">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+          Visibility Report
+        </p>
+        <h1 className="text-2xl font-bold tracking-tight">{brandName}</h1>
         <p className="text-sm text-muted-foreground">
           {report.url} ·{" "}
           {new Date(report.createdAt).toLocaleDateString("en-US", {

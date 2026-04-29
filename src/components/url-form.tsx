@@ -28,7 +28,7 @@ export function UrlForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex w-full max-w-lg flex-col gap-3">
+    <form onSubmit={handleSubmit} className="flex w-full max-w-xl flex-col gap-2">
       <div className="flex gap-2">
         <Input
           type="url"
@@ -38,12 +38,17 @@ export function UrlForm() {
             setValue(e.target.value)
             setError(null)
           }}
-          className="flex-1"
+          className="h-11 flex-1 text-base"
           disabled={isPending}
           aria-label="Website URL"
+          autoFocus
         />
-        <Button type="submit" disabled={!isValid || isPending}>
-          {isPending ? "Starting…" : "Analyze"}
+        <Button
+          type="submit"
+          disabled={!isValid || isPending}
+          className="h-11 cursor-pointer px-6"
+        >
+          {isPending ? "Starting…" : "Analyze →"}
         </Button>
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}

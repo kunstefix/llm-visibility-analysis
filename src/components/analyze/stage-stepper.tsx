@@ -3,12 +3,13 @@ import type { AnalyzeStage } from "@/hooks/use-analyze"
 
 const STAGES: { key: AnalyzeStage; label: string }[] = [
   { key: "scraping", label: "Scraping" },
-  { key: "generating_prompts", label: "Generating prompts" },
-  { key: "querying_llms", label: "Querying LLMs" },
-  { key: "aggregating", label: "Aggregating" },
+  { key: "generating_prompts", label: "Prompts" },
+  { key: "querying_llms", label: "Querying" },
+  { key: "aggregating", label: "Saving" },
 ]
 
 const STAGE_ORDER: AnalyzeStage[] = [
+  "idle",
   "scraping",
   "generating_prompts",
   "querying_llms",
@@ -16,36 +17,53 @@ const STAGE_ORDER: AnalyzeStage[] = [
   "done",
 ]
 
-function stageIndex(stage: AnalyzeStage): number {
-  return STAGE_ORDER.indexOf(stage)
-}
-
 type Props = { stage: AnalyzeStage }
 
 export function StageStepper({ stage }: Props) {
-  const current = stageIndex(stage)
+  const current = STAGE_ORDER.indexOf(stage)
+  const isDone = stage === "done"
 
   return (
-    <ol className="flex items-center gap-2 text-sm">
+    <div className="flex items-center rounded-xl border bg-card px-4 py-3">
       {STAGES.map((s, i) => {
-        const done = current > i
-        const active = current === i
+        const stepNum = i + 1
+        const done = isDone || current > stepNum
+        const active = current === stepNum
+
         return (
-          <li key={s.key} className="flex items-center gap-2">
-            {i > 0 && <span className="text-muted-foreground">→</span>}
-            <span
-              className={cn(
-                "rounded-full px-3 py-1 font-medium",
-                done && "bg-primary text-primary-foreground",
-                active && "bg-accent text-accent-foreground animate-pulse",
-                !done && !active && "text-muted-foreground"
-              )}
-            >
-              {s.label}
-            </span>
-          </li>
+          <div key={s.key} className="flex flex-1 items-center">
+            <div className="flex flex-1 flex-col items-center gap-1.5">
+              <div
+                className={cn(
+                  "flex h-7 w-7 items-center justify-center rounded-full text-xs font-semibold transition-all duration-300",
+                  done && "bg-primary text-primary-foreground",
+                  active && "bg-primary text-primary-foreground ring-4 ring-primary/20 animate-pulse",
+                  !done && !active && "border-2 border-muted text-muted-foreground"
+                )}
+              >
+                {done ? "✓" : stepNum}
+              </div>
+              <span
+                className={cn(
+                  "hidden text-xs sm:block",
+                  active && "font-medium",
+                  !active && !done && "text-muted-foreground"
+                )}
+              >
+                {s.label}
+              </span>
+            </div>
+            {i < STAGES.length - 1 && (
+              <div
+                className={cn(
+                  "mx-1 h-px flex-1 transition-colors duration-500",
+                  done || isDone ? "bg-primary" : "bg-muted"
+                )}
+              />
+            )}
+          </div>
         )
       })}
-    </ol>
+    </div>
   )
 }

@@ -2,51 +2,48 @@ import { UrlForm } from "@/components/url-form"
 
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-10 px-4 py-16">
-      {/* Hero */}
-      <div className="flex flex-col items-center gap-4 text-center">
+    <main className="flex flex-1 flex-col items-center justify-center gap-12 px-4 py-16">
+      <div className="flex flex-col items-center gap-5 text-center">
+        <div className="inline-flex items-center rounded-full border bg-muted/50 px-3 py-1 text-xs text-muted-foreground">
+          Free · No account required
+        </div>
         <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-          LLM Visibility Analysis
+          How visible is your brand<br className="hidden sm:block" /> to AI assistants?
         </h1>
         <p className="max-w-md text-lg text-muted-foreground">
-          Enter your website URL to see how it appears in ChatGPT and Gemini
-          for buying-journey queries.
+          Enter your website URL to see how ChatGPT and Gemini mention you
+          across the buying journey.
         </p>
       </div>
 
       <UrlForm />
 
-      {/* Explainer */}
-      <div className="flex flex-col items-center gap-6 max-w-2xl w-full">
-        <div className="grid gap-4 sm:grid-cols-3 w-full text-center text-sm">
-          {[
-            {
-              step: "1",
-              title: "We generate 5 prompts",
-              body: "Covering awareness, consideration, decision, problem, and solution stages.",
-            },
-            {
-              step: "2",
-              title: "We ask both LLMs",
-              body: "ChatGPT and Gemini with live web search enabled so citations are real.",
-            },
-            {
-              step: "3",
-              title: "You see where you appear",
-              body: "Visibility score, market share, citation sources, and actionable recommendations.",
-            },
-          ].map(({ step, title, body }) => (
-            <div key={step} className="flex flex-col gap-2 rounded-lg border p-4">
-              <div className="text-2xl font-bold text-muted-foreground">{step}</div>
-              <p className="font-semibold">{title}</p>
-              <p className="text-muted-foreground leading-relaxed">{body}</p>
+      <div className="grid w-full max-w-2xl gap-3 sm:grid-cols-3">
+        {[
+          {
+            step: "1",
+            title: "Generate 5 prompts",
+            body: "Covering awareness, consideration, decision, problem, and solution stages.",
+          },
+          {
+            step: "2",
+            title: "Query both LLMs",
+            body: "ChatGPT and Gemini with live web search — citations are real.",
+          },
+          {
+            step: "3",
+            title: "Get your report",
+            body: "Visibility score, market share, citation sources, and recommendations.",
+          },
+        ].map(({ step, title, body }) => (
+          <div key={step} className="flex flex-col gap-3 rounded-xl border bg-card p-5 shadow-sm">
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
+              {step}
             </div>
-          ))}
-        </div>
-
-        <div className="text-xs text-muted-foreground text-center">
-          Free · No account required · 3 analyses per day per IP
-        </div>
+            <p className="font-semibold text-sm">{title}</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">{body}</p>
+          </div>
+        ))}
       </div>
     </main>
   )

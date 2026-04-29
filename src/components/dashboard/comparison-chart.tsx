@@ -8,7 +8,9 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  CartesianGrid,
 } from "recharts"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 type Props = {
   openAiScore: number | null
@@ -20,6 +22,9 @@ type Props = {
   openAiCitations: number
   geminiCitations: number
 }
+
+const CHATGPT_COLOR = "hsl(220, 70%, 55%)"
+const GEMINI_COLOR = "hsl(160, 55%, 42%)"
 
 export function ComparisonChart({
   openAiScore,
@@ -33,17 +38,17 @@ export function ComparisonChart({
 }: Props) {
   const data = [
     {
-      metric: "Visibility %",
-      ChatGPT: openAiScore ?? 0,
-      Gemini: geminiScore ?? 0,
+      metric: "Visibility",
+      ChatGPT: Math.round(openAiScore ?? 0),
+      Gemini: Math.round(geminiScore ?? 0),
     },
     {
-      metric: "Total mentions",
+      metric: "Mentions",
       ChatGPT: openAiMentions,
       Gemini: geminiMentions,
     },
     {
-      metric: "Unique brands",
+      metric: "Brands",
       ChatGPT: openAiUniqueBrands,
       Gemini: geminiUniqueBrands,
     },
@@ -55,18 +60,47 @@ export function ComparisonChart({
   ]
 
   return (
-    <section className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold">ChatGPT vs Gemini</h2>
-      <ResponsiveContainer width="100%" height={260}>
-        <BarChart data={data} margin={{ top: 4, right: 8, left: -16, bottom: 4 }}>
-          <XAxis dataKey="metric" tick={{ fontSize: 12 }} />
-          <YAxis tick={{ fontSize: 12 }} />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="ChatGPT" fill="hsl(220 70% 50%)" radius={[4, 4, 0, 0]} />
-          <Bar dataKey="Gemini" fill="hsl(160 60% 45%)" radius={[4, 4, 0, 0]} />
-        </BarChart>
-      </ResponsiveContainer>
-    </section>
+    <Card>
+      <CardHeader className="pb-2">
+        <CardTitle className="text-base">ChatGPT vs Gemini</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <ResponsiveContainer width="100%" height={240}>
+          <BarChart
+            data={data}
+            margin={{ top: 4, right: 12, left: -20, bottom: 4 }}
+            barCategoryGap="30%"
+          >
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" />
+            <XAxis
+              dataKey="metric"
+              tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis
+              tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+              axisLine={false}
+              tickLine={false}
+              width={36}
+            />
+            <Tooltip
+              contentStyle={{
+                borderRadius: "8px",
+                border: "1px solid hsl(var(--border))",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                fontSize: 12,
+              }}
+              cursor={{ fill: "hsl(var(--muted))", opacity: 0.4 }}
+            />
+            <Legend
+              wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
+            />
+            <Bar dataKey="ChatGPT" fill={CHATGPT_COLOR} radius={[4, 4, 0, 0]} />
+            <Bar dataKey="Gemini" fill={GEMINI_COLOR} radius={[4, 4, 0, 0]} />
+          </BarChart>
+        </ResponsiveContainer>
+      </CardContent>
+    </Card>
   )
 }
