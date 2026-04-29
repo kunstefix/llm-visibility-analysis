@@ -27,7 +27,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} h-full overflow-y-scroll antialiased`}
     >
       <body className="flex min-h-screen flex-col bg-background">
         <AppHeader />
