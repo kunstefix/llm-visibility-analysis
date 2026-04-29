@@ -125,19 +125,16 @@ export function PromptAccordion({ prompts, targetBrand }: Props) {
         <Accordion type="multiple">
           {prompts.map((prompt, i) => (
             <AccordionItem key={prompt.id} value={prompt.id}>
-              <AccordionTrigger className="cursor-pointer text-left hover:no-underline">
-                <div className="flex min-w-0 items-center gap-3 pr-2">
-                  <span className="w-4 shrink-0 text-sm text-muted-foreground">{i + 1}.</span>
+              <AccordionTrigger className="cursor-pointer text-left hover:no-underline [&>svg]:mt-0.5 [&>svg]:shrink-0 [&>svg]:self-start">
+                <div className="flex min-w-0 items-start gap-3 pr-2">
+                  <span className="mt-0.5 w-4 shrink-0 text-sm text-muted-foreground">{i + 1}.</span>
                   <Badge
                     variant="outline"
-                    className={
-                      STAGE_COLORS[prompt.stage] ??
-                      "bg-gray-100 text-gray-700 border-gray-200"
-                    }
+                    className={`shrink-0 ${STAGE_COLORS[prompt.stage] ?? "bg-gray-100 text-gray-700 border-gray-200"}`}
                   >
                     {prompt.stage}
                   </Badge>
-                  <span className="truncate text-sm">{prompt.text}</span>
+                  <span className="text-sm">{prompt.text}</span>
                 </div>
               </AccordionTrigger>
               <AccordionContent>
